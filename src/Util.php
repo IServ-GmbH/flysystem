@@ -142,7 +142,11 @@ class Util
      */
     protected static function removeFunkyWhiteSpace($path)
     {
-        if (preg_match('#\p{C}+#u', $path)) {
+        $match = preg_match('#\p{C}+#u', $path);
+
+        if ($match !== 0) {
+            // $match === false means malformed UTF-8 -- must also be treated as corrupted,
+            // not silently allowed through.
             throw CorruptedPathDetected::forPath($path);
         }
 
